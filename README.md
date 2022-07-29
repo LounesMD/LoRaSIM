@@ -7,3 +7,5 @@ In this repository you can find :
 - An integration of the blockchain with LoRaWAN identification
 - Modification of the LoRaWAN UML
 - Réorganisation des fichiers
+
+Not yet open to use
