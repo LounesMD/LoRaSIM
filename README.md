@@ -1,11 +1,13 @@
-# blockchainForIdentification_2022
-Repository for BlockchainForIdentification.
+# LoRaSim
+## LoRaWAN simulator
+This package provides a simulator of the LoRaWAN 1.1 protocol. This simulator aims to implement the entire LoRaWAN protocol.
+<p align="center">
+  <img src="SimulatorLoRaWAN.PNG" />
+</p>
+Main contact: Lounès Meddahi (lounes.meddahi@gmail.com)
 
-In this repository you can find :
-- A full implementation of the LoRaWAN authentification/identification process (soon fully available and as a library) named PyLoS1
-- A full implementation of a blockchain with a proof of identification (soon implemented and soon fully available and as a library)
-- An integration of the blockchain with LoRaWAN identification
-- Modification of the LoRaWAN UML
-- Réorganisation des fichiers
+## UML diagram
 
-Not yet open to use
+## Other
+This repository is still in build. The latest version of the simulator will soon be upload.
+
