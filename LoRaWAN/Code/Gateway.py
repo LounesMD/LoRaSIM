@@ -113,11 +113,13 @@ class Gateway:
         request : list
             Join request message to forward to network servers.
         """
+        a = time.time()
         for networkServer in self.networkServers:
-            if(networkServer.isAvailable()):
+            if(networkServer.isAvailable()and (networkServer.isDown == False)):
                 networkServer.forwardJoinRequestMessage(request , self)
-            else:
-                print("Network Server not available")
+                
+            #else:
+             #   print("Network Server not available")
                 
     def forwardJoinAcceptMessage(self,downlink): 
         """        

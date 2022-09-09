@@ -49,6 +49,8 @@ class EndDevice(object):
         self.JoinNonce = None #Nonce to generate the session keys
         self.envoie = None #Time when the object sent the request
         self.retour = None #Time when the object received the request
+        self.timeForIdentification = None
+        self.isIdent = False
         # please refer to : https://lora-alliance.org/wp-content/uploads/2020/11/lorawantm_specification_-v1.1.pdf
 
         # MIC :
@@ -200,7 +202,7 @@ class EndDevice(object):
         list
             join request message.
         """
-        return [self.JoinEUI,self.DevEUI,self.DevNonce, datetime.datetime.now(), self.getMICJoinRequest()]
+        return [self.JoinEUI,self.DevEUI,self.DevNonce, datetime.datetime.now(), self.getMICJoinRequest(),self]
     
 class ClassA(EndDevice):
     """

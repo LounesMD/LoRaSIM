@@ -12,7 +12,7 @@ import string
 from Crypto.Hash import CMAC
 from Crypto.Cipher import AES
 import time
-import Server
+from  Server import *
 
 class JoinServer(Server):
     def __init__(self,JoinEUI,capacity):
@@ -26,6 +26,8 @@ class JoinServer(Server):
         self.applicationServers = dict()
         self.MHDRJoinAccept = '0b00111000'
         self.Ip = 0
+        self.isUSed = False
+        self.nbIdent = 0
       
     def isAlreadyConnected(self,DevEUI,DevNonce):
         return self.AcceptedDevices[DevEUI]['DevNonce']==DevNonce  #We are sure that the DevEUI is in the JoinServer because we checkthat before using this methode
@@ -38,11 +40,16 @@ class JoinServer(Server):
 
     def processJoinRequestMessage(self, request):
         if(request[1] in self.getAcceptedDevices()):
+            self.isUSed = True
+            request[5].isIdent = True
+            request[5].timeForIdentification = time.time() - request[5].envoie
+            self.nbIdent += 1
             self.keysGeneration(request) #        
             return self.sendJoinAcceptMessage(request) #
         else:
-            request[5].fakeRequestTimeDetection = time.time() - request[5].envoie
-        
+            if(request[5].fakeRequestTimeDetection == None):
+                request[5].fakeRequestTimeDetection = time.time() - request[5].envoie
+            
     
     def sendJoinAcceptMessage(self,request):
         #1 Keys for the Application Servers
@@ -55,6 +62,7 @@ class JoinServer(Server):
         #3 JoinAcceptMessage for the End devices
         downlink = self.joinAcceptMessage(request) #On suppose un AppNonce aléatoire)
         #print("-> JOINSERVER : Le joinAccepteMessage chiffré est ",downlink)
+        #time.sleep(0.5) #Air time beetwen the join server and the network server
         for networkServer in self.networkServers:
             networkServer.forwardDownlink(downlink)
 

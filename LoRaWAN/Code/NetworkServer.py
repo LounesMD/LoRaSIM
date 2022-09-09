@@ -6,8 +6,8 @@ Created on Tue Jul  5 15:55:07 2022
 """
 
 import datetime
-import Server
-
+from Server import *
+import time
 class NetworkServer(Server):
         
     def __init__(self):
@@ -24,6 +24,7 @@ class NetworkServer(Server):
         self.joinAcceptAlreadyProccessed = dict()
         self.nearestGateway = dict()
         self.joinRequestAlreadyProccessed = dict()
+        self.isDown = False
         
     def addnetworkServer(self , ns):
         self.networkServers.append(ns)
@@ -54,19 +55,18 @@ class NetworkServer(Server):
         
     def addJoinServers(self,joinServer):
         if(joinServer.getJoinEUI() not in self.joinServers.values()):
-            self.joinServers[joinServer] = joinServer
+            self.joinServers[joinServer.getJoinEUI()] = joinServer
                 
     def addGateway(self,gateway):
         self.gateways.append(gateway)        
     
     def forwardJoinRequestMessage(self,request,gatewayId):    
-        if(self.acceptabledevNonce(request)):
-            for joinServer in self.joinServers:
-                if(request[0]==joinServer.getJoinEUI()): #Checking to send the join request to the good join server 
-                        self.joinRequestAlreadyProccessed[request[1]] = request[2]
-                        self.nearestGateway[request[1]] = gatewayId
-                        self.shareTheInformationJoinRequest(request[1] , request[2])
-                        joinServer.processJoinRequestMessage(request)
+        if(self.acceptabledevNonce(request) and (request[0] in self.joinServers)):
+            #self.joinRequestAlreadyProccessed[request[1]] = request[2]
+            self.nearestGateway[request[1]] = gatewayId
+            #self.shareTheInformationJoinRequest(request[1] , request[2])
+            time.sleep(0.5)#Time to sent the message to the join server
+            self.joinServers[request[0]].processJoinRequestMessage(request)
                 
     def shareTheInformationJoinRequest(self , devEUI, DevNonce):
         """
@@ -85,10 +85,9 @@ class NetworkServer(Server):
         if(downlink[1] in self.nearestGateway):
             if(self.nearestGateway[downlink[1]].isAvailable()):
                 if(downlink[1] not in self.joinAcceptAlreadyProccessed):
-                    self.joinAcceptAlreadyProccessed[downlink[1]] = True
-                    self.shareTheInformationJoinAccepte(downlink[1], self.nearestGateway[downlink[1]].getId())
+                    #self.joinAcceptAlreadyProccessed[downlink[1]] = True
+                    #self.shareTheInformationJoinAccepte(downlink[1], self.nearestGateway[downlink[1]].getId())
                     self.nearestGateway[downlink[1]].forwardJoinAcceptMessage(downlink)
-        
         
     def isATimeoutRequest(self, request):
         a = request[3]

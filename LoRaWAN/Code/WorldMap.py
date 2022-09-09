@@ -87,7 +87,10 @@ class WorldMap():
             if(gateway.acceptedFrequency(frequency)):
                 #We check that the gateway can support the message
                 if(gateway.isAvailable() ):
-                    Thread(target = gateway.forwardJoinRequestMessage, args=(request,)).start()
+                    #Thread(target = gateway.forwardJoinRequestMessage, args=(request,)).start()
+                    gateway.forwardJoinRequestMessage(request)
+                #else:
+                 #   print("Gateway not available")
             else:
                 print("Not an accepted frequency")
 
