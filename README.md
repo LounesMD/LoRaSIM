@@ -1,5 +1,5 @@
-# LoRaSim Simulator
-## LoRaSim Simulator
+# LoRaSIM Simulator
+## LoRaSIM Simulator
 This package provides a simulator of the LoRaWAN 1.1 protocol and a simulator of the LoRaWAN protocol using the PoI-based blockchain for identification.
 
 This simulator generates a LoRaWAN topology where end devices can join the network by performing a join procedure.
