@@ -23,3 +23,17 @@ To implement the LoRaWAN simulator we have provided an object-oriented implement
 </p>
 
 The blockchain can be fin in the [Block4PoId](https://github.com/LounesMD/Block4PoId) repository.
+
+## Citing 
+If you use the project in your work, please consider citing it with:
+
+```bibtex
+@misc{LoRaSIM,
+  author = {Lounès, Meddahi},
+  title = {Leveraging blockchain for a robust and scalable device identification in LoRaWAN},
+  year = {2022},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/LounesMD/LoraSIM}},
+}
+```
