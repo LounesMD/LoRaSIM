@@ -18,7 +18,6 @@ from Simulator_WithBlockchain.utils.NetworkServer import generateNetworkServers
 from utils.JoinServer import generateJoinServers
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.datasets import make_blobs
 
 EU_Frequencies = []
 #WorldMap = WorldMap()

@@ -12,7 +12,6 @@ import string
 from Crypto.Hash import CMAC
 from Crypto.Cipher import AES
 import time
-
 from random import *
 
 from utils.Server import Server
