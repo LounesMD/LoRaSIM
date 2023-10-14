@@ -18,7 +18,7 @@ from utils.WorldMap import WorldMap
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src.Simulator_WithBlockchain.utils.NetworkServer import generateNetworkServers
+from Simulator_WithBlockchain.utils.NetworkServer import generateNetworkServers
 
 EU_Frequencies = []
 #WorldMap = WorldMap()
