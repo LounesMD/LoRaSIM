@@ -166,11 +166,7 @@ def main(Mapsize ,  nbOfEndDevice, nbOfJoinServer,nbOfNetworkServers,nbOfAppServ
     
     
     for js in JoinServers:
-        js.sendDataToTheBlockchain()
-        
-    #for i in range(10):
-       # NetworkServers[0].getBlockchain().printBlock(i)
-       
+        js.sendDataToTheBlockchain()       
         
     #Random link between join servers and application servers.
     for i in range(nbJoinServers):
@@ -209,6 +205,9 @@ def main(Mapsize ,  nbOfEndDevice, nbOfJoinServer,nbOfNetworkServers,nbOfAppServ
     
     di = dict()
     
+    ###
+    # The following code section implements the LoRaWAN network after having k network servers down.
+    ###
     for k in range(nbOfDownServer):
         for ed in EndDevices:
             ed.isIdent = False

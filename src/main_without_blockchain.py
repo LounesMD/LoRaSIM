@@ -198,6 +198,9 @@ def main(Mapsize ,  nbOfEndDevice, nbOfJoinServer,nbOfNetworkServers,nbOfAppServ
        
     di = dict()
     
+    ###
+    # The following code section implements the LoRaWAN network after having k network servers down.
+    ###
     for k in range(nbOfDownServer):
         for ed in EndDevices:
             ed.isIdent = False
