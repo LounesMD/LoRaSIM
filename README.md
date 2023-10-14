@@ -46,3 +46,7 @@ First install the requirements: `pip install -r ./requirements/requirements.txt`
 To run the version with/without the blockchain (from the folder src): `python ./main_{with;without}_blockchain.py` 
 
 N.B.: If you want to modify the positioning strategy or else, you have to modify the associated function in the right file. Like `generate_Strat_Gateway` in the file `utils/Gateway.py`.
+
+## Example
+
+Check the file `src/simulator_example.py` to have a short example on how instantiate the simulator.
