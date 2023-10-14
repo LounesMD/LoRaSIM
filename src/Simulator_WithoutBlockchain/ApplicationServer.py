@@ -32,7 +32,6 @@ def generateApplicationServers(nb, AppKey = 'Sixteen byte key'):
         list: A list containing the generated ApplicationServer instances.
     """
     ApplicationServers = list()
-    nb = nb
     for i in range(nb):
         ApplicationServers.append(ApplicationServer(AppKey))
     return ApplicationServers

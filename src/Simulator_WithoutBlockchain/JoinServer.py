@@ -15,14 +15,6 @@ import time
 from  Server import *
 from random import *
 
-
-def get_random_string(length):
-    #https://pynative.com/python-generate-random-string/
-    # choose from all lowercase letter
-    letters = string.printable 
-    result_str = ''.join(choice(letters) for i in range(length))
-    return result_str
-
 class JoinServer(Server):
     def __init__(self,JoinEUI,capacity):
         super().__init__(JoinEUI)
@@ -164,6 +156,13 @@ import string
     
 def get_random_byte(length):
     result_str = ''.join(random.choice(string.printable) for i in range(length))
+    return result_str
+
+def get_random_string(length):
+    #https://pynative.com/python-generate-random-string/
+    # choose from all lowercase letter
+    letters = string.printable 
+    result_str = ''.join(choice(letters) for i in range(length))
     return result_str
 
 

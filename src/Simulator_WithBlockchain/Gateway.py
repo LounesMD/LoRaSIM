@@ -5,9 +5,11 @@ Created on Tue Jul  5 15:13:20 2022
 @author: Lounès Meddahi (lounes.meddahi[at]gmail.com)
 """
 
+import string
 import time
 import datetime
 from datetime import date
+from random import *
 
 class Gateway:
     def __init__(self,pos,Id,WorldMap,Frequencyband,capacity):
@@ -140,8 +142,76 @@ class Gateway:
     def ForwardDownLink(self,Message):
         #TODO
         return        
-        
-        
-        
-        
-        
+
+def get_random_string(length):
+    #https://pynative.com/python-generate-random-string/
+    # choose from all lowercase letter
+    letters = string.printable 
+    result_str = ''.join(choice(letters) for i in range(length))
+    return result_str
+
+def generateRandomGateway(nb, WorldMap,size, frequence = 'EU433'):
+    """
+    Generate random gateways with specified parameters.
+
+    This function generates a specified number of random gateways on a grid represented by a WorldMap.
+    
+    Parameters:
+        nb (int): The number of gateways to generate.
+        WorldMap: An instance of the WorldMap class representing the grid.
+        size (int): The size of the grid (assumed to be square).
+
+    Returns:
+        tuple: A tuple containing two lists:
+            - Gateways (list): A list of generated Gateway objects.
+            - GatewaysPos (list): A list of positions (x, y) corresponding to the generated gateways.
+
+    Note:
+        - It is assumed that all generated gateways will use the 'EU433' frequency by default.
+        - Gateway IDs are generated using a random string followed by an index.
+    """    
+    #We suppose that they all use EU433 
+    Gateways = list()
+    GatewaysPos = list()
+    for i in range(nb):
+        (x,y) = (randint(0,size) , randint(0,size))
+        GatewayId = get_random_string(8)+str(i)
+        gateway = Gateway((x,y),GatewayId,WorldMap,frequence)
+        Gateways.append(gateway)
+        GatewaysPos.append((x,y))
+    return Gateways,GatewaysPos
+
+def generateSmartGateway(WorldMap,size,capacity,frequence = 'EU433'):
+    """
+    Generate more optimaly the gateways.
+
+    This function generates gateways on a grid represented by a WorldMap, ensuring one gateway
+    every 15 kilometers on the grid.
+
+    Parameters:
+        WorldMap: An instance of the WorldMap class representing the grid.
+        size (int): The size of the grid (assumed to be square) in meters.
+        capacity (int): The capacity of the generated gateways.
+
+    Returns:
+        tuple: A tuple containing two lists:
+            - Gateways (list): A list of generated Gateway objects.
+            - GatewaysPos (list): A list of positions (x, y) corresponding to the generated gateways.
+
+    Note:
+        - It is assumed that all generated gateways will use the 'EU433' frequency by default.
+        - Gateway IDs are generated using a random string followed by an index.
+        - Gateways are generated such that there is one gateway every 15 kilometers on the grid.
+          The grid is divided into cells of size 15 kilometers by 15 kilometers, and a gateway is placed
+          at the center of each cell.
+    """    
+    Gateways = list()
+    GatewaysPos = list()
+    for i in range(size//15000 ):
+        for j in range(size//15000 ):
+            (x,y) = ( i*15000+15000/2 , j*15000+15000/2)
+            GatewayId = get_random_string(8)+str(i)
+            gateway = Gateway((x,y),GatewayId,WorldMap,frequence,capacity)
+            Gateways.append(gateway)
+            GatewaysPos.append((x,y))
+    return Gateways,GatewaysPos                        

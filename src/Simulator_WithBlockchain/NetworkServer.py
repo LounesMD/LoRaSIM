@@ -195,3 +195,18 @@ class NetworkServer(Server):
     def forwardUpLink(self , uplink):
         #TODO
         return
+    
+def generateNetworkServers(nb):
+    # Define a gamma function, which will be used when creating the Blockchain object.
+    def gamma(t, threshold=0.5):
+        return threshold
+
+    blockchain = Blockchain(gamma)
+    networkServers = list()
+
+    # Create 'nb' network server instances and associate them with the blockchain.
+    for i in range(nb):
+        networkServer = NetworkServer(blockchain)
+        networkServers.append(networkServer)
+
+    return networkServers

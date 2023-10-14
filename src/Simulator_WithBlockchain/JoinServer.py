@@ -13,6 +13,7 @@ from Crypto.Hash import CMAC
 from Crypto.Cipher import AES
 import time
 from  Server import *
+from random import *
 
 class JoinServer(Server):
     def __init__(self,JoinEUI,capacity):
@@ -154,3 +155,57 @@ import string
 def get_random_byte(length):
     result_str = ''.join(random.choice(string.printable) for i in range(length))
     return result_str
+
+def get_random_string(length):
+    #https://pynative.com/python-generate-random-string/
+    # choose from all lowercase letter
+    letters = string.printable 
+    result_str = ''.join(choice(letters) for i in range(length))
+    return result_str
+
+def generateJoinServers(nb):
+    """
+    Class representing a Join Server in a LoRaWAN network.
+
+    Attributes:
+        JoinEUI (str): An 8-byte identifier for the Join Server.
+        capacity (int): The maximum capacity of the Join Server.
+        AcceptedDevices (dict): A dictionary of accepted devices with DevEUIs as keys.
+        NwkId (str): A network identifier.
+        networkServers (dict): A dictionary of network servers in the network.
+        applicationServers (dict): A dictionary of application servers.
+        MHDRJoinAccept (str): MHDR field value for Join Accept messages.
+        Ip (int): An IP address.
+        isUSed (bool): A flag indicating if the Join Server has been used.
+        nbIdent (int): The number of identifications.
+
+    Methods:
+        isAlreadyConnected(self, DevEUI, DevNonce): Checks if a device with the given DevEUI and DevNonce is already connected.
+        getAcceptedDevices(self): Returns the dictionary of accepted devices.
+        addapplicationServers(self, ApplicationServer, AppKey): Adds an application server to the dictionary.
+        processJoinRequestMessage(self, request): Processes a Join Request message.
+        sendJoinAcceptMessage(self, request): Sends a Join Accept message to an end device.
+        GetAppKeys(self, request): Returns the application keys for a request.
+        joinAcceptMessage(self, request): Generates a Join Accept message.
+        addNetworkServers(self, NetworkServer, NwkKey): Adds a network server to the dictionary.
+        getNetworkServers(self): Returns the dictionary of network servers.
+        getJoinEUI(self): Returns the JoinEUI.
+        addDevices(self, deviceEUI, NwkKey, AppKey): Adds a device to the accepted devices dictionary.
+        isACorroectDevice(self, request): Checks if a device is in the accepted devices.
+        randomIp(self): Generates a random IP address.
+        randomNwkAddr(self, length): Generates a random network address.
+        randomNetID2Bytes(self): Generates random network ID bytes.
+        keysGeneration(self, request): Generates keys for a device request.
+
+    Note:
+        - The JoinServer class represents the functionality and attributes of a Join Server in a LoRaWAN network.
+    """
+    AllJoinEUI = list()
+    joinServers = list()
+    for i in range(nb):
+        JoinEUI = get_random_string(8)        
+        while JoinEUI in AllJoinEUI:
+            JoinEUI = get_random_string(8)        
+        AllJoinEUI.append(JoinEUI)
+        joinServers.append(JoinServer(JoinEUI , 0))
+    return joinServers
