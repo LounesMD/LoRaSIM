@@ -169,18 +169,40 @@ def get_random_byte(length):
 
 def generateJoinServers(nb):
     """
-    Generate a list of JoinServer instances with unique JoinEUIs.
+    Class representing a Join Server in a LoRaWAN network.
 
-    This function generates a specified number of JoinServer instances, each with a unique JoinEUI.
-    
-    Parameters:
-        nb (int): The number of JoinServer instances to generate.
+    Attributes:
+        JoinEUI (str): An 8-byte identifier for the Join Server.
+        capacity (int): The maximum capacity of the Join Server.
+        AcceptedDevices (dict): A dictionary of accepted devices with DevEUIs as keys.
+        NwkId (str): A network identifier.
+        networkServers (dict): A dictionary of network servers in the network.
+        applicationServers (dict): A dictionary of application servers.
+        MHDRJoinAccept (str): MHDR field value for Join Accept messages.
+        Ip (int): An IP address.
+        isUSed (bool): A flag indicating if the Join Server has been used.
+        nbIdent (int): The number of identifications.
 
-    Returns:
-        list: A list containing the generated JoinServer instances.
+    Methods:
+        isAlreadyConnected(self, DevEUI, DevNonce): Checks if a device with the given DevEUI and DevNonce is already connected.
+        getAcceptedDevices(self): Returns the dictionary of accepted devices.
+        addapplicationServers(self, ApplicationServer, AppKey): Adds an application server to the dictionary.
+        processJoinRequestMessage(self, request): Processes a Join Request message.
+        sendJoinAcceptMessage(self, request): Sends a Join Accept message to an end device.
+        GetAppKeys(self, request): Returns the application keys for a request.
+        joinAcceptMessage(self, request): Generates a Join Accept message.
+        addNetworkServers(self, NetworkServer, NwkKey): Adds a network server to the dictionary.
+        getNetworkServers(self): Returns the dictionary of network servers.
+        getJoinEUI(self): Returns the JoinEUI.
+        addDevices(self, deviceEUI, NwkKey, AppKey): Adds a device to the accepted devices dictionary.
+        isACorroectDevice(self, request): Checks if a device is in the accepted devices.
+        randomIp(self): Generates a random IP address.
+        randomNwkAddr(self, length): Generates a random network address.
+        randomNetID2Bytes(self): Generates random network ID bytes.
+        keysGeneration(self, request): Generates keys for a device request.
 
     Note:
-        - Each JoinServer instance is created with a unique JoinEUI, ensuring no duplicates.
+        - The JoinServer class represents the functionality and attributes of a Join Server in a LoRaWAN network.
     """
     AllJoinEUI = list()
     joinServers = list()

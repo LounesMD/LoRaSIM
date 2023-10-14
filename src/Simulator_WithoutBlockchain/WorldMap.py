@@ -11,9 +11,32 @@ from threading import Thread
 
 class WorldMap():
     """
-    Class to connect the an end device with gateways
-    """
-    
+    Class to represent the mapping of end devices, gateways, and servers in a LoRaWAN network.
+
+    Attributes:
+        EndDevices (dict): A dictionary of end devices with DevEUIs as keys.
+        Gateway (dict): A dictionary of gateways with identifiers as keys.
+        NetworkServers (list): A list of network servers in the network.
+        JoinServers (list): A list of join servers in the network.
+        matriceAdjacenceVersGateway (dict): A dictionary representing the adjacency matrix from end devices to gateways.
+        matriceAdjacenceVersEndDevices (dict): A dictionary representing the adjacency matrix from gateways to end devices.
+
+    Methods:
+        getGateways(self): Returns the dictionary of gateways.
+        getmatriceAdjacenceVersEndDevices(self): Returns the adjacency matrix from gateways to end devices.
+        getmatriceAdjacenceVersGateway(self): Returns the adjacency matrix from end devices to gateways.
+        AjoutmatriceAdjacenceVersGateway(self, EndDevice): Updates the adjacency matrix from end devices to gateways.
+        AjoutmatriceAdjacenceVersEndDevices(self, gateway): Updates the adjacency matrix from gateways to end devices.
+        addEndDevice(self, EndDevice): Adds an end device to the map and updates the adjacency matrices.
+        addGateway(self, gateway): Adds a gateway to the map and updates the adjacency matrices.
+        addNetworkServers(self, NetworkServer): Adds a network server to the list.
+        addJoinServers(self, JoinServer): Adds a join server to the list.
+        ConnectToAGateway(self, frequency, request, DataRate): Connects an end device to a gateway for a given request.
+        ConnectToEndDevice(self, Id, downlink): Connects to an end device for a downlink message.
+
+    Note:
+        - The WorldMap class represents the spatial relationships between end devices and gateways in the LoRaWAN network.
+    """    
     def __init__(self):
         self.EndDevices = dict()
         self.Gateway = dict()

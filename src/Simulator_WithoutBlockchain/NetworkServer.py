@@ -9,7 +9,46 @@ import datetime
 from Server import *
 import time
 class NetworkServer(Server):
-        
+    """
+    A class representing a network server in a LoRaWAN network.
+
+    Attributes:
+        supportedMessages (int): The maximum number of supported messages by the network server.
+        gateways (list): A list of gateways connected to the network server.
+        joinServers (dict): A dictionary of join servers with JoinEUI as keys.
+        checkDevNonce (dict): A dictionary to check DevNonce for preventing replay attacks.
+        NwkSEncKey (dict): A dictionary to store NwkSEncKey, FNwkSIntKey, and SNwkSIntKey keys for DevEUIs.
+        lastUpdate (datetime): The timestamp of the last update for managing supported messages.
+        managedMessages (int): The number of managed messages.
+        appServers (dict): A dictionary of application servers with identifiers as keys.
+        HS (bool): Indicates whether the network server is in a high-security mode.
+        networkServers (list): A list of network servers connected to this network server.
+        joinAcceptAlreadyProccessed (dict): A dictionary to track processed join accept messages.
+        nearestGateway (dict): A dictionary to store the nearest gateway for each device.
+        joinRequestAlreadyProccessed (dict): A dictionary to track processed join request messages.
+        isDown (bool): Indicates whether the network server is down.
+
+    Methods:
+        addnetworkServer(self, ns): Adds a network server to the list of connected network servers.
+        deactivation(self): Deactivates the network server.
+        isAvailable(self): Checks if the network server is available for message processing.
+        SaveNwkSEncKey(self, DevEUI, NwkSEncKey, FNwkSIntKey, SNwkSIntKey): Saves security keys for a DevEUI.
+        addJoinServers(self, joinServer): Adds a join server to the network server.
+        addGateway(self, gateway): Adds a gateway to the network server.
+        forwardJoinRequestMessage(self, request, gatewayId): Forwards a join request message to the appropriate join server.
+        shareTheInformationJoinRequest(self, devEUI, DevNonce): Shares information about a join request with other network servers.
+        shareTheInformationJoinAccepte(self, devEUI, gatewayId): Shares information about a join accept with other network servers.
+        forwardDownlink(self, downlink): Forwards a downlink message to the nearest gateway.
+        isATimeoutRequest(self, request): Checks if a request is a timeout message based on timestamp.
+        acceptabledevNonce(self, request): Checks if DevNonce is acceptable for preventing replay attacks.
+        addApplicationServer(self, appServer): Adds an application server to the network server.
+        forwardUpLink(self, uplink): Forwards an uplink message (not implemented yet).
+
+    Note:
+        - The NetworkServer class is a part of a LoRaWAN network and interacts with gateways, join servers,
+          application servers, and other network servers.
+        - Some methods and attributes are specific to LoRaWAN network management and security.
+    """
     def __init__(self):
         self.supportedMessages = 1000000 #According to https://lora-developers.semtech.com/documentation/tech-papers-and-guides/lora-and-lorawan/
         self.gateways = list()
@@ -94,7 +133,7 @@ class NetworkServer(Server):
         b = datetime.datetime.now()
         c = b-a
         minutes = divmod(c.total_seconds(), 60)
-        return (minutes[0]*60 + minutes[1]) # Nous faisons un cas où nous somme sûr d'avoir des temps < heures donc on regarde que les secondes (et minutes)
+        return (minutes[0]*60 + minutes[1])
     
     def acceptabledevNonce(self,request):
         """
@@ -104,7 +143,6 @@ class NetworkServer(Server):
         if(timeout < 15):
             if((request[1] not in self.checkDevNonce) ):
                 self.checkDevNonce[request[1]] = request[2]
-                #print("-> NETWORKSERVER : Message recevable car 1er DevNonce reçu de ce EndDevice et un temps (minute) de traitement de : "+ str(timeout))
                 return True
             return (request[2] not in self.checkDevNonce[request[1]])
         print("TimeoutMessage")
