@@ -117,3 +117,19 @@ class NetworkServer(Server):
     def forwardUpLink(self , uplink):
         #TODO
         return
+    
+
+def generateNetworkServers(nb):
+    """
+    Generate a list of NetworkServer instances.
+
+    Parameters:
+        nb (int): The number of NetworkServer instances to generate.
+
+    Returns:
+        list: A list containing the generated NetworkServer instances.
+    """
+    networkServers = list()
+    for i in range(nb):
+        networkServers.append(NetworkServer())
+    return networkServers

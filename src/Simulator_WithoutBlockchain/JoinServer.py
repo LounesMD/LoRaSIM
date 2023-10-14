@@ -13,6 +13,15 @@ from Crypto.Hash import CMAC
 from Crypto.Cipher import AES
 import time
 from  Server import *
+from random import *
+
+
+def get_random_string(length):
+    #https://pynative.com/python-generate-random-string/
+    # choose from all lowercase letter
+    letters = string.printable 
+    result_str = ''.join(choice(letters) for i in range(length))
+    return result_str
 
 class JoinServer(Server):
     def __init__(self,JoinEUI,capacity):
@@ -156,3 +165,29 @@ import string
 def get_random_byte(length):
     result_str = ''.join(random.choice(string.printable) for i in range(length))
     return result_str
+
+
+def generateJoinServers(nb):
+    """
+    Generate a list of JoinServer instances with unique JoinEUIs.
+
+    This function generates a specified number of JoinServer instances, each with a unique JoinEUI.
+    
+    Parameters:
+        nb (int): The number of JoinServer instances to generate.
+
+    Returns:
+        list: A list containing the generated JoinServer instances.
+
+    Note:
+        - Each JoinServer instance is created with a unique JoinEUI, ensuring no duplicates.
+    """
+    AllJoinEUI = list()
+    joinServers = list()
+    for i in range(nb):
+        JoinEUI = get_random_string(8)        
+        while JoinEUI in AllJoinEUI:
+            JoinEUI = get_random_string(8)        
+        AllJoinEUI.append(JoinEUI)
+        joinServers.append(JoinServer(JoinEUI , 0))
+    return joinServers

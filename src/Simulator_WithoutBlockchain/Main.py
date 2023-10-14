@@ -39,122 +39,11 @@ def get_random_string(length):
     return result_str
     
 
-def generateRandomEndDeviceBIS(nb , JoinEUI , WorldMap,size , SF):
-    #AppKeys,NwkKeys
-    """
-    -> They connect them to a random join server
-    /!\ Pls manage smartly your AppKey NwkKey. With this function you cannot get those keys. So yes, my example below doesn't work if you want to get the session keys
-    """
-    AllDevEUI = list()
-    EndDevices = list()
-    EndDevicesPos = list()
-    for i in range(nb):
-        DevEUI = get_random_string(8)        
-        while DevEUI in AllDevEUI:
-            DevEUI = get_random_string(8)        
-        JoinEUI = choice(JoinEUI)
-        AppKey =  get_random_string(16) #AppKeys[i]
-        NwkKey = get_random_string(16) #NwkKeys[i]
-        (x,y) = (randint(0,size) , randint(0,size)) #1000km x 1000km
-        EndDevicePos = (x,y)
-        SpF = SF #choice(list(SpreedingFactor.keys()))
-        endDevice = EndDevice(DevEUI, JoinEUI, AppKey, NwkKey, EndDevicePos, WorldMap,SpF)
-        EndDevices.append(endDevice)
-        EndDevicesPos.append((x,y))
-        AllDevEUI.append(DevEUI)
-    return EndDevices,EndDevicesPos
 AppKey = 'Sixteen byte key'
 NwkKey = 'Sixteen byte key'
 
-def generateRandomEndDevice(nb , JoinServerAvailable , WorldMap,size , SF):
-    #AppKeys,NwkKeys
-    """
-    -> They connect them to a random join server
-    /!\ Pls manage smartly your AppKey NwkKey. With this function you cannot get those keys. So yes, my example below doesn't work if you want to get the session keys
-    """
-    AllDevEUI = list()
-    EndDevices = list()
-    EndDevicesPos = list()
-    for i in range(nb):
-        DevEUI = get_random_string(8)        
-        while DevEUI in AllDevEUI:
-            DevEUI = get_random_string(8) 
-            
-        JoinServer = choice(JoinServerAvailable)
-        JoinEUI = JoinServer.getJoinEUI()
-        JoinServer.addDevices(DevEUI , AppKey , NwkKey)
-        
-        (x,y) = (randint(0,size) , randint(0,size)) #1000km x 1000km
-        EndDevicePos = (x,y)
-        SpF = SF #choice(list(SpreedingFactor.keys()))
-        endDevice = EndDevice(DevEUI, JoinEUI, AppKey, NwkKey, EndDevicePos, WorldMap,SpF)
-        EndDevices.append(endDevice)
-        EndDevicesPos.append((x,y))
-        AllDevEUI.append(DevEUI)
-    return EndDevices,EndDevicesPos
 
-def generateRandomGateway(nb, WorldMap,size):
-    frequence = 'EU433'
-    #We suppose that they all use EU433 
-    Gateways = list()
-    GatewaysPos = list()
-    for i in range(nb):
-        (x,y) = (randint(0,size) , randint(0,size))
-        GatewayId = get_random_string(8)+str(i)
-        gateway = Gateway((x,y),GatewayId,WorldMap,frequence)
-        Gateways.append(gateway)
-        GatewaysPos.append((x,y))
-    return Gateways,GatewaysPos
-
-def generateSmartGateway(WorldMap,size,capacity):
-    """
-    With this function you have one gateway every 15km
-    """
-    frequence = 'EU433'
-    Gateways = list()
-    GatewaysPos = list()
-    for i in range(size//15000 ):
-        for j in range(size//15000 ):
-            (x,y) = ( i*15000+15000/2 , j*15000+15000/2)
-            GatewayId = get_random_string(8)+str(i)
-            gateway = Gateway((x,y),GatewayId,WorldMap,frequence,capacity)
-            Gateways.append(gateway)
-            GatewaysPos.append((x,y))
-    return Gateways,GatewaysPos
-
-def generateNetworkServers(nb):
-    networkServers = list()
-    for i in range(nb):
-        networkServers.append(NetworkServer())
-    return networkServers
-
-def generateNetworkServers(nb):
-    networkServers = list()
-    for i in range(nb):
-        networkServers.append(NetworkServer())
-    return networkServers
-
-def generateApplicationServers(nb):
-    ApplicationServers = list()
-    nb = nb
-    for i in range(nb):
-        ApplicationServers.append(ApplicationServer(AppKey))
-    return ApplicationServers
-
-def generateJoinServers(nb):
-    AllJoinEUI = list()
-    joinServers = list()
-    for i in range(nb):
-        JoinEUI = get_random_string(8)        
-        while JoinEUI in AllJoinEUI:
-            JoinEUI = get_random_string(8)        
-        AllJoinEUI.append(JoinEUI)
-        joinServers.append(JoinServer(JoinEUI , 0))
-    return joinServers
-
-#@jit
-#Main For Time Connection and Connection Rate
-def main(Mapsize ,  nbOfEndDevice, nbOfJoinServer,nbOfNetworkServers,nbOfAppServers,WorldMap,nbOfConnectionIteration , nbOfDownServer):
+def main(Mapsize ,  nbOfEndDevice, nbOfJoinServer,nbOfNetworkServers,nbOfAppServers,WorldMap,nbOfConnectionIteration , nbOfDownServer, plot_simu=True, capacity = 28):
     """    
     Parameters
     ----------
@@ -174,6 +63,10 @@ def main(Mapsize ,  nbOfEndDevice, nbOfJoinServer,nbOfNetworkServers,nbOfAppServ
          Maximum number of requests an end device can send to connect to the network.
     nbOfDownServer : Integer
         Number of network servers down. With this parameter, the experience will be made nbOfDownServer times (with 0,...,nbOfDownServer network servers down)
+    plot_simu: Boolean
+        True to plot an image of the simulated environment, False otherwise. 
+    capacity: Integer
+        Number of messages per second and per gateway
     """
     WorldMap = WorldMap
     size = Mapsize
@@ -183,14 +76,12 @@ def main(Mapsize ,  nbOfEndDevice, nbOfJoinServer,nbOfNetworkServers,nbOfAppServ
     JoinServers = generateJoinServers(nbJoinServers)
     
     JoinServersAvailable = list()
-    JoinServersAvailable = JoinServers.copy()
-    
+    JoinServersAvailable = JoinServers.copy()    
     
     #We save the DevEUI in a random join server     
     EndDevices,EndDevicesPos = generateRandomEndDevice(nbOfEndDevice, JoinServersAvailable, WorldMap , size*1000 , SF)
     
-    #Gateways,GatewaysPos = generateRandomGateway(500 , WorldMap)
-    capacity = 28
+    #Gateways,GatewaysPos = generateRandomGateway(500 , WorldMap)    
     Gateways,GatewaysPos = generateSmartGateway(WorldMap,size*1000 , capacity)
     nbGateways = len(Gateways)
     #Generation of Network Servers
@@ -289,10 +180,7 @@ def main(Mapsize ,  nbOfEndDevice, nbOfJoinServer,nbOfNetworkServers,nbOfAppServ
         for val in AServersPos:
             (x2,y2) = xas[val],yas[val]
             (x1,y1) = xns[i],yns[i]
-            plt.plot([x1,x2] , [y1,y2],linewidth=0.05,color='k')
-    
-    
-        
+            plt.plot([x1,x2] , [y1,y2],linewidth=0.05,color='k')    
     
     plt.legend(fontsize=8,ncol=1,prop={'size':8}, loc='upper right',bbox_to_anchor=[0.9 , 1])
     plt.title("LoRaWAN Simulator")
@@ -305,9 +193,7 @@ def main(Mapsize ,  nbOfEndDevice, nbOfJoinServer,nbOfNetworkServers,nbOfAppServ
     
     plt.savefig('Img.pdf',bbox_inches='tight')
     plt.show()
-
-
-        
+       
     di = dict()
     
     for k in range(nbOfDownServer):

@@ -9,6 +9,7 @@ import datetime
 from os import urandom
 from Crypto.Hash import CMAC
 from Crypto.Cipher import AES
+from random import *
 
 class EndDevice(object):    
     def __init__(self,DevEUI, JoinEUI, AppKey, NwkKey,Coo,WorldMap,SpreadingFactor):
@@ -210,3 +211,58 @@ class ClassA(EndDevice):
     """
     def __init__(self, DevEUI, JoinEUI, AppKey, NwkKey, Coo):
         super().__init__(DevEUI, JoinEUI, AppKey, NwkKey, Coo)
+
+def get_random_string(length):
+    #https://pynative.com/python-generate-random-string/
+    # choose from all lowercase letter
+    letters = string.printable 
+    result_str = ''.join(choice(letters) for i in range(length))
+    return result_str
+
+
+def generateRandomEndDevice(nb , JoinServerAvailable , WorldMap,size , SF, AppKey = 'Sixteen byte key', NwkKey = 'Sixteen byte key'):
+    """
+    Generate random end devices and connect them to random join servers.
+
+    This function generates a specified number of random end devices and connects them to random join servers.
+    
+    Parameters:
+        nb (int): The number of end devices to generate.
+        JoinServerAvailable (list): A list of available JoinServer instances for connecting end devices.
+        WorldMap: An instance of the WorldMap class representing the grid.
+        size (int): The size of the grid (assumed to be square) in meters.
+        SF (int): The spreading factor for the generated end devices.
+        AppKey (string): Application networks key
+        NwkKey (string): Network servers key
+    Returns:
+        tuple: A tuple containing two lists:
+            - EndDevices (list): A list of generated EndDevice instances.
+            - EndDevicesPos (list): A list of positions (x, y) corresponding to the generated end devices.
+
+    Note:
+        - Each end device is assigned a unique DevEUI.
+        - End devices are connected to random join servers from the provided list.
+        - The AppKey and NwkKey are not generated within this function; they should be provided elsewhere.
+        - The Spreading Factor (SF) is specified for all generated end devices.
+        - End devices are placed randomly within the specified grid.
+    """
+    AllDevEUI = list()
+    EndDevices = list()
+    EndDevicesPos = list()
+    for i in range(nb):
+        DevEUI = get_random_string(8)        
+        while DevEUI in AllDevEUI:
+            DevEUI = get_random_string(8) 
+            
+        JoinServer = choice(JoinServerAvailable)
+        JoinEUI = JoinServer.getJoinEUI()
+        JoinServer.addDevices(DevEUI , AppKey , NwkKey)
+        
+        (x,y) = (randint(0,size) , randint(0,size)) #1000km x 1000km
+        EndDevicePos = (x,y)
+        SpF = SF #choice(list(SpreedingFactor.keys()))
+        endDevice = EndDevice(DevEUI, JoinEUI, AppKey, NwkKey, EndDevicePos, WorldMap,SpF)
+        EndDevices.append(endDevice)
+        EndDevicesPos.append((x,y))
+        AllDevEUI.append(DevEUI)
+    return EndDevices,EndDevicesPos
