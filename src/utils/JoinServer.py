@@ -12,8 +12,10 @@ import string
 from Crypto.Hash import CMAC
 from Crypto.Cipher import AES
 import time
-from  Server import *
+
 from random import *
+
+from utils.Server import Server
 
 class JoinServer(Server):
     def __init__(self,JoinEUI,capacity):
@@ -27,11 +29,15 @@ class JoinServer(Server):
         self.applicationServers = dict()
         self.MHDRJoinAccept = '0b00111000'
         self.Ip = 0
-        self.isUSed = False
-        self.nbIdent = 0
+        self.nbCo = 0
       
+    def sendDataToTheBlockchain(self):
+        data = [elt for elt in self.AcceptedDevices.keys()]
+        for ns in self.networkServers:
+            ns.addNewBlock(data , self.JoinEUI)
+        
     def isAlreadyConnected(self,DevEUI,DevNonce):
-        return self.AcceptedDevices[DevEUI]['DevNonce']==DevNonce  #We are sure that the DevEUI is in the JoinServer because we checkthat before using this methode
+        return self.AcceptedDevices[DevEUI]['DevNonce']==DevNonce  #We are sure that the DevEUI is in the JoinServer because we check that before using this methode
     
     def getAcceptedDevices(self):
         return self.AcceptedDevices
@@ -40,17 +46,13 @@ class JoinServer(Server):
         self.applicationServers[ApplicationServer] = AppKey
 
     def processJoinRequestMessage(self, request):
-        if(request[1] in self.getAcceptedDevices()):
-            self.isUSed = True
-            request[5].isIdent = True
-            request[5].timeForIdentification = time.time() - request[5].envoie
-            self.nbIdent += 1
-            self.keysGeneration(request) #        
-            return self.sendJoinAcceptMessage(request) #
-        else:
-            if(request[5].fakeRequestTimeDetection == None):
-                request[5].fakeRequestTimeDetection = time.time() - request[5].envoie
-            
+        #if(request[1] in self.getAcceptedDevices()): # This methode is useless because the identification is made in the network servers.
+        self.keysGeneration(request) #     
+        self.nbCo += 1
+        return self.sendJoinAcceptMessage(request) #
+        #else:
+         #   request[5].fakeRequestTimeDetection = time.time() - request[5].envoie
+        
     
     def sendJoinAcceptMessage(self,request):
         #1 Keys for the Application Servers
@@ -62,8 +64,6 @@ class JoinServer(Server):
             networkServer.SaveNwkSEncKey(request[1],NwkSEncKey,FNwkSIntKey, SNwkSIntKey)        
         #3 JoinAcceptMessage for the End devices
         downlink = self.joinAcceptMessage(request) #On suppose un AppNonce aléatoire)
-        #print("-> JOINSERVER : Le joinAccepteMessage chiffré est ",downlink)
-        #time.sleep(0.5) #Air time beetwen the join server and the network server
         for networkServer in self.networkServers:
             networkServer.forwardDownlink(downlink)
 
@@ -164,7 +164,6 @@ def get_random_string(length):
     letters = string.printable 
     result_str = ''.join(choice(letters) for i in range(length))
     return result_str
-
 
 def generateJoinServers(nb):
     """

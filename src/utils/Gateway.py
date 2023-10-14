@@ -4,7 +4,6 @@ Created on Tue Jul  5 15:13:20 2022
 
 @author: Lounès Meddahi (lounes.meddahi[at]gmail.com)
 """
-
 import string
 import time
 import datetime
@@ -115,11 +114,9 @@ class Gateway:
         request : list
             Join request message to forward to network servers.
         """
-        a = time.time()
         for networkServer in self.networkServers:
-            if(networkServer.isAvailable()and (networkServer.isDown == False)):
+            if(networkServer.isAvailable()):
                 networkServer.forwardJoinRequestMessage(request , self)
-                
             #else:
              #   print("Network Server not available")
                 
@@ -144,7 +141,6 @@ class Gateway:
     def ForwardDownLink(self,Message):
         #TODO
         return        
-        
 
 def get_random_string(length):
     #https://pynative.com/python-generate-random-string/
@@ -217,4 +213,4 @@ def generateSmartGateway(WorldMap,size,capacity,frequence = 'EU433'):
             gateway = Gateway((x,y),GatewayId,WorldMap,frequence,capacity)
             Gateways.append(gateway)
             GatewaysPos.append((x,y))
-    return Gateways,GatewaysPos
+    return Gateways,GatewaysPos                        

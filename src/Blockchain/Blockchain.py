@@ -4,9 +4,9 @@ Created on Mon Jul 18 16:35:06 2022
 
 @author: Lounes
 """
-import Block
+
 import datetime
-from Block import *
+from Blockchain.Block import *
 import time
 
 class Blockchain:    

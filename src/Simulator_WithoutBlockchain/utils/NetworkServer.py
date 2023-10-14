@@ -6,8 +6,10 @@ Created on Tue Jul  5 15:55:07 2022
 """
 
 import datetime
-from Server import *
 import time
+
+from utils.Server import Server
+
 class NetworkServer(Server):
     """
     A class representing a network server in a LoRaWAN network.

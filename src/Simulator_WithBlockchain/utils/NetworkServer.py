@@ -6,12 +6,13 @@ Created on Tue Jul  5 15:55:07 2022
 """
 
 import datetime
-from Server import *
 import time
 import random
 import string
-from Block import *
-from Blockchain import*
+from Blockchain.Block import BlockUtil, GenesisBlock
+from Blockchain.Blockchain import Blockchain
+
+from utils.Server import Server
 
 class NetworkServer(Server):
         

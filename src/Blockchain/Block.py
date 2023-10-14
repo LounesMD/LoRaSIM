@@ -6,9 +6,6 @@ Created on Mon Jul 18 16:35:06 2022
 """
 import hashlib
 
- 
-    
-
 class Block(object):
     """
     A class representing a block in a blockchain.
