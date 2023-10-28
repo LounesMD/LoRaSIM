@@ -25,7 +25,7 @@ To implement the LoRaWAN simulator we have provided an object-oriented implement
 The blockchain can be fin in the [Block4PoId](https://github.com/LounesMD/Block4PoId) repository.
 
 ## Paper 
-The paper has been accepted at [ISNCC'23](https://www.isncc-conf.org/).
+The paper has been accepted at [ISNCC'23](https://www.isncc-conf.org/) and selected **Best paper award**.
 
 ## Citing 
 If you use the project in your work, please consider citing it with:
